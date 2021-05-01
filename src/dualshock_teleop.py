@@ -9,7 +9,6 @@ class Arm_Goal(object):
     def __init__(self, publisher):
 
         self._pub = publisher
-        self._goal_pose = {'L':0,'X':0,'T':0,'P':0}
         self.remap = {
             'axis_left_x':'L',
             'axis_left_y':'X',
@@ -18,21 +17,14 @@ class Arm_Goal(object):
         }
 
     def callback(self, msg):
-        CUI_RES = 4096
-        SCALE = 1
+        PWM_RES = 255
         input_vals = {}
         goal = arm_msg()
         for attr in self.remap.keys():
             read_val = getattr(msg, attr)
 
-            tmp = self._goal_pose[self.remap[attr]] + SCALE*CUI_RES*read_val
-            tmp = tmp   + CUI_RES/2
-            tmp = math.floor(tmp%CUI_RES)
-
-            goal.data = tmp
+            goal.data = (PWM_RES+1) + PWM_RES*read_val
             goal.joint = ord(self.remap[attr])
-            
-            self._goal_pose[goal.joint] = tmp
             self._pub.publish(goal)
 
 
