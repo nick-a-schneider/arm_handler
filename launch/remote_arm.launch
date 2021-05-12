@@ -1,0 +1,8 @@
+<launch>
+    <node name="excavator_serial" pkg="rosserial_python" type="serial_node.py">
+        <param name="port" value="/dev/ttyACM0"/>
+        <param name="baud" value="500000"/>
+    </node>
+    <include file="$(find ds4_driver)/launch/ds4_driver.launch"/>
+    <node name="ds4_teleop" pkg="arm_handler" type="dualshock_teleop.py"/>
+</launch>
